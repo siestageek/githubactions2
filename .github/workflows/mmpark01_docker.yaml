@@ -1,4 +1,4 @@
-name: Spring Boot CI/CD Pipeline
+name: Spring Boot CI/CD Pipeline - docker
 
 on:
   workflow_dispatch
