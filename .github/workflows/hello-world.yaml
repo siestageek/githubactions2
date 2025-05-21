@@ -11,4 +11,5 @@ jobs:
         run: echo "Hello, GitHub Actions!"
 
       - name: Print Github Action run count
-        run: echo "count: ${{ github.run_number }}"
+        run: |
+          echo "count: ${{ github.run_number }}"
