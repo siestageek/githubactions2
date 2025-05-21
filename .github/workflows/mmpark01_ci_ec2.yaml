@@ -7,15 +7,6 @@ on:
   #pull_request:
   #  branches: [ "main" ]
 
-name: Spring Boot CI/CD Pipeline
-
-on:
-  workflow_dispatch
-  #push:
-  #  branches: [ "main" ]
-  #pull_request:
-  #  branches: [ "main" ]
-
 jobs:
   build:
     name: Build JAR
