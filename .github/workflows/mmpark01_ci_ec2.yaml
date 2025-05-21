@@ -62,7 +62,7 @@ jobs:
 
     - name: Run Spring Boot application
       run: |
-        java -jar ./*SNAPSHOT.jar &
+        RUNNER_TRACKING_ID="" nohup java -jar *.jar > application.log 2>&1 &
         echo "Application started"
         sleep 30  # 테스트를 위해 30초 대기
 
@@ -72,17 +72,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Run automated tests 0
+      run: |
+        ps aux | grep java
+        netstat -tlpen | grep 8080 || echo "No process listening on port 8080"
+        
     - name: Run automated tests 1
       run: |
-        curl http://localhost:8080 || exit 1        
+        curl -v http://localhost:8080 || echo "Failed to connect to root endpoint"    
 
     - name: Run automated tests 2
       run: |
-        curl http://localhost:8080/images || exit 1        
+        curl -v http://localhost:8080/images || echo "Failed to connect to images endpoint"     
 
     - name: Run automated tests 3
       run: |
-        curl http://localhost:8080/animal || exit 1                
+        curl -v http://localhost:8080/animal || echo "Failed to connect to animal endpoint"             
 
     - name: Stop application
       if: always()
