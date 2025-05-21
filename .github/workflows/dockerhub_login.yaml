@@ -1,0 +1,37 @@
+name: Docker Hub Login and Logout
+
+on:
+  workflow_dispatch
+  #push:
+  #  branches: [ "main" ]
+  #pull_request:
+  #  branches: [ "main" ]  
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: "siestageek"
+          password: "Wotjd@121370"
+          # logout: true  # 기본값은 true입니다
+      
+      # 여기에 Docker 관련 작업 추가 (빌드, 푸시 등)
+      - name: Docker operations
+        run: |
+          # 예: Docker 이미지 빌드
+          docker build -t siestageek/myapp:latest .
+          
+          # 예: Docker 이미지 푸시
+          docker push siestageek/myapp:latest
+      
+      # 명시적 로그아웃 (선택 사항, login-action에서 logout: true로 설정한 경우 필요 없음)
+      - name: Logout from Docker Hub
+        if: always()  # 이전 단계가 실패해도 항상 실행
+        run: docker logout
+        
