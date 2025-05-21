@@ -33,6 +33,10 @@ jobs:
     # 빌드 및 테스트
     - name: Build and Test with Gradle
       run: ./gradlew clean build
+
+    # 빌드 결과물 확인
+    - name: List target directory
+      run: ls -la ./build/libs
       
     - name: Run Spring Boot application
       run: |
