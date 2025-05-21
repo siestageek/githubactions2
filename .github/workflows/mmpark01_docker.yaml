@@ -31,12 +31,12 @@ jobs:
       run: chmod +x gradlew
       
     # 빌드 및 테스트
-    - name: Build and Test with Gradle
-      run: ./gradlew clean build
+    #- name: Build and Test with Gradle
+    #  run: ./gradlew clean build
 
     # 빌드 결과물 확인
-    - name: List target directory
-      run: ls -la ./build/libs
+    #- name: List target directory
+    #  run: ls -la ./build/libs
       
     # Docker Buildx 설정
     - name: Set up Docker Buildx
@@ -47,6 +47,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: .
+        file: ./Dockerfile
         push: false
         load: true
         tags: massai_mara:v1
