@@ -20,8 +20,8 @@ jobs:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
         env:
-          DOCKER_USERNAME: "siestageek@gmail.com"
-          DOCKER_PASSWORD: "Wotjd@121370"
+          DOCKER_USERNAME: "siestageek"
+          DOCKER_PASSWORD: "AudvnaWlwl@72"
           # logout: true  # 기본값은 true입니다
       
       # 여기에 Docker 관련 작업 추가 (빌드, 푸시 등)
