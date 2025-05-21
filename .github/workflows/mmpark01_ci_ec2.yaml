@@ -7,8 +7,18 @@ on:
   #pull_request:
   #  branches: [ "main" ]
 
+name: Spring Boot CI/CD Pipeline
+
+on:
+  workflow_dispatch
+  #push:
+  #  branches: [ "main" ]
+  #pull_request:
+  #  branches: [ "main" ]
+
 jobs:
   build:
+    name: Build JAR
     runs-on: ubuntu-latest
     
     steps:
@@ -38,13 +48,39 @@ jobs:
     - name: List target directory
       run: ls -la ./build/libs
 
+    - name: Upload JAR artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: application-jar
+        path: build/libs/*SNAPSHOT.jar
+        # Maven을 사용하는 경우 path: target/*.jar      
+
   deploy:
+    name: Deploy and Run
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download JAR artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: application-jar
+
+    - name: List downloaded files
+      run: ls -la
+
     - name: Run Spring Boot application
       run: |
-        java -jar ./build/libs/massai_mara_park-0.0.1-SNAPSHOT.jar &
+        java -jar ./build/libs/*SNAPSHOT.jar &
         echo "Application started"
         sleep 30  # 테스트를 위해 30초 대기
-       
+
+  test:
+    name: Test Endpoints
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
     - name: Run automated tests 1
       run: |
         curl http://localhost:8080 || exit 1        
@@ -56,4 +92,16 @@ jobs:
     - name: Run automated tests 3
       run: |
         curl http://localhost:8080/animal || exit 1                
-        
+
+    - name: Stop application
+      if: always()
+      run: |
+        # 애플리케이션 종료
+        pid=$(lsof -t -i:8080)
+        if [ -n "$pid" ]; then
+          echo "Stopping application with PID: $pid"
+          kill -15 $pid
+        else
+          echo "No application running on port 8080"
+        fi                
+      
