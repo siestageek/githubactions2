@@ -62,9 +62,15 @@ jobs:
 
     - name: Run Spring Boot application
       run: |
-        RUNNER_TRACKING_ID="" nohup java -jar *.jar > application.log 2>&1 &
+        RUNNER_TRACKING_ID="" nohup java -jar ./*SNAPSHOT.jar > application.log 2>&1 &
         echo "Application started"
         sleep 30  # 테스트를 위해 30초 대기
+
+    - name: Verify application is running
+      run: |
+        ps aux | grep java
+        netstat -tlpen | grep 8080 || echo "No process listening on port 8080"
+        cat application.log        
 
   test:
     name: Test Endpoints
@@ -75,19 +81,19 @@ jobs:
     - name: Run automated tests 0
       run: |
         ps aux | grep java
-        netstat -tlpen | grep 8080 || echo "No process listening on port 8080"
+        netstat -tlpen | grep 8080 || exit -1
         
     - name: Run automated tests 1
       run: |
-        curl -v http://localhost:8080 || echo "Failed to connect to root endpoint"    
+        curl -v http://localhost:8080 || exit -1
 
     - name: Run automated tests 2
       run: |
-        curl -v http://localhost:8080/images || echo "Failed to connect to images endpoint"     
+        curl -v http://localhost:8080/images || exit -1
 
     - name: Run automated tests 3
       run: |
-        curl -v http://localhost:8080/animal || echo "Failed to connect to animal endpoint"             
+        curl -v http://localhost:8080/animal || exit -1         
 
     - name: Stop application
       if: always()
