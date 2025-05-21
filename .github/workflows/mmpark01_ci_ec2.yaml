@@ -1,4 +1,4 @@
-name: Spring Boot CI/CD Pipeline
+name: Spring Boot CI/CD Pipeline multiple jobs
 
 on:
   workflow_dispatch
