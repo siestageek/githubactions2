@@ -20,7 +20,7 @@ jobs:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
         env:
-          DOCKER_USERNAME: "siestageek"
+          DOCKER_USERNAME: "siestageek@gmail.com"
           DOCKER_PASSWORD: "Wotjd@121370"
           # logout: true  # 기본값은 true입니다
       
