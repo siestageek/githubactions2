@@ -1,0 +1,58 @@
+name: Spring Boot CI/CD Pipeline - compose
+
+on:
+  workflow_dispatch
+  #push:
+  #  branches: [ "main" ]
+  #pull_request:
+  #  branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 코드 체크아웃
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    # JDK 17 설정
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # Docker Compose 버전 확인
+    - name: Check Docker Compose version
+      run: docker compose version
+      
+    # Docker Compose 빌드
+    - name: Build with Docker Compose
+      run: docker compose build
+      
+    # Docker Compose 실행
+    - name: Run with Docker Compose
+      run: |
+        docker compose up -d
+        echo "Waiting for containers to start..."
+        sleep 60
+        
+    # 컨테이너 상태 확인
+    - name: Check container status
+      run: |
+        docker compose ps
+        docker compose logs
+           
+    - name: Run automated tests 1
+      run: |
+        curl http://localhost:8080 || exit 1        
+
+    - name: Run automated tests 2
+      run: |
+        curl http://localhost:8080/images || exit 1        
+
+    - name: Run automated tests 3
+      run: |
+        curl http://localhost:8080/animal || exit 1                
+        
