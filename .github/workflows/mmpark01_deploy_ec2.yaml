@@ -114,6 +114,9 @@ jobs:
           ssh -vvv -o StrictHostKeyChecking=no \
           -o "UserKnownHostsFile=/dev/null" \
           -i ~/.ssh/ec2_key -p 12137 ${USER_NAME}@${HOSTNAME} '
+            pkill -f massai_mara_park-0.0.1-SNAPSHOT
+            sleep 10
+            
             java -jar ./massai_mara_park-0.0.1-SNAPSHOT.jar &
             echo "Application started"
             sleep 30
