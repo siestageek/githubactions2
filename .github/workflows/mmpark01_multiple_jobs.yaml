@@ -81,6 +81,7 @@ jobs:
 
 
   run_test:
+    needs: hub_push
     runs-on: ubuntu-22.04
 
     steps:
