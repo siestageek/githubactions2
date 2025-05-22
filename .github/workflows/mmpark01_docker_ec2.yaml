@@ -96,7 +96,7 @@ jobs:
           port: 12137
           source: "compose-multijobs.yaml"
           target: "/home/${{ secrets.EC2_USER_NAME }}"
-          strip_components: 1
+          # strip_components: 1
   
 
   ec2_run_test:
