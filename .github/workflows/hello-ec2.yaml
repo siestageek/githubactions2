@@ -35,7 +35,7 @@ jobs:
           # EC2에 SSH 접속하여 기본 정보 확인
           ssh -vvv -o StrictHostKeyChecking=no \
           -o "UserKnownHostsFile=/dev/null" \
-          -i ~/.ssh/ec2_key -p 12137 ubuntu@13.125.218.128 '
+          -i ~/.ssh/ec2_key -p 12137 ${USER_NAME}@${HOSTNAME} '
           
             echo "=== EC2 연결 성공! ==="
             echo "현재 사용자: $(whoami)"
