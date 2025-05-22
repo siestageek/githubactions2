@@ -1,0 +1,47 @@
+name: Test EC2 Connection
+
+on:
+  workflow_dispatch:  # 수동 실행 가능
+
+env:
+    PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+    HOSTNAME: ${{ secrets.EC2_SSH_HOST }}
+    USER_NAME: ${{ secrets.EC2_USER_NAME }}
+
+jobs:
+  test-connection:
+    name: Test EC2 SSH Connection
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Test SSH Connection to EC2
+        run: |
+          echo "SSH 연결 테스트를 시작합니다..."
+          
+          # SSH 개인키 파일 생성 및 권한 설정
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          
+          # EC2에 SSH 접속하여 기본 정보 확인
+          ssh -o StrictHostKeyChecking=no -i private_key ${EC2_USER_NAME}@${EC2_SSH_HOST} '
+            echo "=== EC2 연결 성공! ==="
+            echo "현재 사용자: $(whoami)"
+            echo "호스트명: $(hostname)"
+            echo "현재 시간: $(date)"
+            echo "운영체제: $(cat /etc/os-release | grep PRETTY_NAME)"
+            echo "현재 디렉토리: $(pwd)"
+            echo "디스크 사용량:"
+            df -h | head -5
+            echo "메모리 사용량:"
+            free -h
+            echo "=== Hello from EC2! ==="
+          '
+          
+          echo "SSH 연결 테스트가 완료되었습니다."
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f private_key
