@@ -111,12 +111,9 @@ jobs:
           # EC2에 SSH 접속하여 기본 정보 확인
           ssh -o StrictHostKeyChecking=no \
           -o "UserKnownHostsFile=/dev/null" \
-          -i ~/.ssh/ec2_key -p 12137 ${USER_NAME}@${HOSTNAME} '            
-            pkill -f 'massai_mara_park-0.0.1-SNAPSHOT.jar' || true
+          -i ~/.ssh/ec2_key -p 12137 ${USER_NAME}@${HOSTNAME} '
             
-            nohup java -jar ./massai_mara_park-0.0.1-SNAPSHOT.jar > app.log 2>&1 < /dev/null &            
-            echo "Application started"
-            sleep 30            
+            nohup java -jar ./massai_mara_park-0.0.1-SNAPSHOT.jar > app.log 2>&1 < /dev/null &                        
           '            
 
       - name: Cleanup
