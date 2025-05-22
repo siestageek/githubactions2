@@ -1,0 +1,32 @@
+name: massai mara park 01 multiple jobs
+
+on:
+  workflow_dispatch
+
+env:
+  IMAGE_NAME: massai_mara
+  IMAGE_TAG: ${{ github.run_number }}
+
+jobs:
+  build_image:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+    # Docker 이미지 빌드
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          load: true
+          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_NAME }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: docker operations
+        run: |
+          docker image ls
