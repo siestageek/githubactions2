@@ -46,6 +46,7 @@ jobs:
           # retention-days: 1
 
   hub_push:
+    needs: build_image
     runs-on: ubuntu-22.04
 
     steps:
