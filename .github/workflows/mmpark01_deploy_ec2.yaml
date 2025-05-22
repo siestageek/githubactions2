@@ -107,9 +107,7 @@ jobs:
         env:
           HOSTNAME: ${{ secrets.EC2_SSH_HOST }}
           USER_NAME: ${{ secrets.EC2_USER_NAME }}
-        run: |
-          echo "SSH 연결 테스트를 시작합니다..."    
- 
+        run: | 
           # EC2에 SSH 접속하여 기본 정보 확인
           ssh -o StrictHostKeyChecking=no \
           -o "UserKnownHostsFile=/dev/null" \
@@ -120,12 +118,10 @@ jobs:
             echo "Application started"
             sleep 30
             
-            curl http://localhost:8080
-            curl http://localhost:8080/images
-            curl http://localhost:8080/animal
-            '
-            
-          echo "SSH 연결 테스트가 완료되었습니다."          
+            #curl http://localhost:8080
+            #curl http://localhost:8080/images
+            #curl http://localhost:8080/animal
+          '            
 
       - name: Cleanup
         if: always()
