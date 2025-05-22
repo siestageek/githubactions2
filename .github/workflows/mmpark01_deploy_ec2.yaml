@@ -114,16 +114,17 @@ jobs:
           ssh -o StrictHostKeyChecking=no \
           -o "UserKnownHostsFile=/dev/null" \
           -i ~/.ssh/ec2_key -p 12137 ${USER_NAME}@${HOSTNAME} '            
+            pkill -f 'massai_mara_park-0.0.1-SNAPSHOT.jar' || true
             
-            nohup java -jar ./massai_mara_park-0.0.1-SNAPSHOT.jar &
+            nohup java -jar ./massai_mara_park-0.0.1-SNAPSHOT.jar > app.log 2>&1 < /dev/null &            
             echo "Application started"
             sleep 30
             
             curl http://localhost:8080
             curl http://localhost:8080/images
             curl http://localhost:8080/animal
-          '          
-          
+            '
+            
           echo "SSH 연결 테스트가 완료되었습니다."          
 
       - name: Cleanup
