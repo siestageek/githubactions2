@@ -24,7 +24,7 @@ jobs:
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           
           # EC2에 SSH 접속하여 기본 정보 확인
-          ssh -o StrictHostKeyChecking=no -i private_key ${EC2_USER_NAME}@${EC2_SSH_HOST} '
+          ssh -o StrictHostKeyChecking=no -i private_key -p 12137 ${USER_NAME}@${HOSTNAME} '
             echo "=== EC2 연결 성공! ==="
             echo "현재 사용자: $(whoami)"
             echo "호스트명: $(hostname)"
