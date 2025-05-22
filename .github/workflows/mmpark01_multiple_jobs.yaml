@@ -4,6 +4,7 @@ on:
   workflow_dispatch
 
 env:
+  DOCKER_USERNAME: siestageek
   IMAGE_NAME: massai_mara
   IMAGE_TAG: ${{ github.run_number }}
 
@@ -15,9 +16,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: setup docker buildx
-        uses: docker/setup-buildx-action@v3        
-
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
@@ -25,10 +23,22 @@ jobs:
           file: ./Dockerfile
           push: false
           load: true
-          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_NAME }}
+          tags: ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: docker operations
         run: |
           docker image ls
+
+      - name: Save Docker image
+        run: |
+          docker save ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} > image.tar
+      
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-image
+          path: image.tar
+          retention-days: 1
+
