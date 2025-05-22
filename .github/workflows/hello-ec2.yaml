@@ -55,13 +55,12 @@ jobs:
           
           echo "SSH 연결 테스트가 완료되었습니다."
 
-      - name: Upload README via SCP
+      - name: Upload README via SCP  
         run: |
           scp -i ~/.ssh/ec2_key \
               -o "StrictHostKeyChecking=no" \
               -o "UserKnownHostsFile=/dev/null" \
-              README.md \
-              -i ~/.ssh/ec2_key -p 12137 ${USER_NAME}@${HOSTNAME}:~/                
+              README.md -p 12137 ${USER_NAME}@${HOSTNAME}:~/                
 
       - name: Cleanup
         if: always()
