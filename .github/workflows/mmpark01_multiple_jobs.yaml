@@ -78,3 +78,33 @@ jobs:
       - name: logout from docker hub
         if: always()
         run: docker logout
+
+
+  run_test:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: check docker compose version
+        run: docker compose version
+
+      - name: run with docker compose
+        run: |
+          docker compose -f ./compose-multijobs.yaml up -d  
+          sleep 30
+          
+          docker compose ps
+          docker compose logs
+          
+
+      - name: run automated test #1
+        run: |
+          curl  http://localhost:8080   ||   exit  -1   
+
+      - name: run automated test #2
+        run: |
+          curl  http://localhost:8080/images   ||   exit  -1   
+          
+      - name: run automated test #3
+        run: |
+          curl  http://localhost:8080/animal   ||   exit  -1     
+          
