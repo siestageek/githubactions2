@@ -85,6 +85,9 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
       - name: check docker compose version
         run: docker compose version
 
