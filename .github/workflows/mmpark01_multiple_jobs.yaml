@@ -16,6 +16,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: setup docker buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
@@ -23,7 +26,7 @@ jobs:
           file: ./Dockerfile
           push: false
           load: true
-          tags: ${{ env.IMAGE_NAME }}:v${{ env.IMAGE_TAG }}
+          tags: ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:v${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -33,7 +36,7 @@ jobs:
 
       - name: Save Docker image
         run: |
-          docker save ${{ env.IMAGE_NAME }}:v${{ env.IMAGE_TAG }} > image.tar
+          docker save ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:v${{ env.IMAGE_TAG }} > image.tar
       
       - name: Upload image artifact
         uses: actions/upload-artifact@v4
