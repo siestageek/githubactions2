@@ -24,8 +24,8 @@ jobs:
           push: false
           load: true
           tags: ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:v${{ env.IMAGE_TAG }}
-          #cache-from: type=gha
-          #cache-to: type=gha,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: docker operations
         run: |
@@ -33,7 +33,7 @@ jobs:
 
       - name: Save Docker image
         run: |
-          docker save ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} > image.tar
+          docker save ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:v${{ env.IMAGE_TAG }} > image.tar
       
       - name: Upload image artifact
         uses: actions/upload-artifact@v4
