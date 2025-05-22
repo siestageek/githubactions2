@@ -63,7 +63,7 @@ jobs:
           scp -i ~/.ssh/ec2_key \
               -o "StrictHostKeyChecking=no" \
               -o "UserKnownHostsFile=/dev/null" \
-              README.md -p 12137 ${USER_NAME}@${HOSTNAME}:~/                
+              -P 12137 README.md ${USER_NAME}@${HOSTNAME}:~/                
 
       - name: Cleanup
         if: always()
