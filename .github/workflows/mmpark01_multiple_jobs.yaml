@@ -9,39 +9,51 @@ env:
   IMAGE_TAG: ${{ github.run_number }}
 
 jobs:
-  build_image:
+#   build_image:
+#     runs-on: ubuntu-22.04
+
+#     steps:
+    #   - name: Checkout Code
+    #     uses: actions/checkout@v4
+
+    #   - name: setup docker buildx
+    #     uses: docker/setup-buildx-action@v3
+
+    #   - name: Build Docker image
+    #     uses: docker/build-push-action@v5
+    #     with:
+    #       context: .
+    #       file: ./Dockerfile
+    #       push: false
+    #       load: true
+    #       tags: ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:v${{ env.IMAGE_TAG }}
+    #       cache-from: type=gha
+    #       cache-to: type=gha,mode=max
+
+    #   - name: docker operations
+    #     run: |
+    #       docker image ls
+
+    #   - name: Save Docker image
+    #     run: |
+    #       docker save ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:v${{ env.IMAGE_TAG }} > image.tar
+      
+    #   - name: Upload image artifact
+    #     uses: actions/upload-artifact@v4
+    #     with:
+    #       name: docker-image
+    #       path: image.tar
+    #       retention-days: 1
+
+  hub_push:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: setup docker buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: false
-          load: true
-          tags: ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:v${{ env.IMAGE_TAG }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: docker operations
-        run: |
-          docker image ls
-
-      - name: Save Docker image
-        run: |
-          docker save ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:v${{ env.IMAGE_TAG }} > image.tar
-      
-      - name: Upload image artifact
-        uses: actions/upload-artifact@v4
+      - name: download JAR artifact
+        uses: actions/download-artifact@v4
         with:
           name: docker-image
-          path: image.tar
-          retention-days: 1
 
+      - name: check downloaded files
+        run: ls -al   
+        
