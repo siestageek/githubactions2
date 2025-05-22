@@ -56,6 +56,9 @@ jobs:
           echo "SSH 연결 테스트가 완료되었습니다."
 
       - name: Upload README via SCP  
+        env:
+          HOSTNAME: ${{ secrets.EC2_SSH_HOST }}
+          USER_NAME: ${{ secrets.EC2_USER_NAME }}      
         run: |
           scp -i ~/.ssh/ec2_key \
               -o "StrictHostKeyChecking=no" \
