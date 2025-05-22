@@ -1,0 +1,125 @@
+name: massai mara 01 deploy ec2
+
+# ssh -o StrictHostKeyChecking=no 
+# -i ~/.ssh/clouds2025.pem -p 12137 
+# ubuntu@13.125.218.128
+# GitHub Actions 러너는 매번 다른 IP를 사용하므로, 
+# 보안 그룹에서 SSH 포트(22번)를 0.0.0.0/0으로 열어야 합니다.
+
+on:
+  workflow_dispatch:  # 수동 실행 가능
+
+jobs:
+  build_jar:
+    name: Build JAR
+    runs-on: ubuntu-22.04
+    
+    steps:
+    # 코드 체크아웃
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    # JDK 17 설정
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    # Gradle 설정
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    # 빌드 및 테스트
+    - name: Build and Test with Gradle
+      run: ./gradlew clean build
+
+    # 빌드 결과물 확인
+    - name: List target directory
+      run: ls -la ./build/libs
+
+    - name: Upload JAR artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: application-jar
+        path: build/libs/*SNAPSHOT.jar
+
+  ec2_deploy:
+    needs: build_jar
+    name: Test EC2 SSH Connection
+    runs-on: ubuntu-22.04
+
+    steps:   
+      - name: download JAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: application-jar
+
+      - name: check downloaded files
+        run: ls -al 
+
+      - name: Setup SSH Directory
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Write Private Key
+        run: |
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/ec2_key
+          chmod 600 ~/.ssh/ec2_key
+  
+      - name: Upload README via SCP  
+        env:
+          HOSTNAME: ${{ secrets.EC2_SSH_HOST }}
+          USER_NAME: ${{ secrets.EC2_USER_NAME }}      
+        run: |
+          scp -i ~/.ssh/ec2_key \
+              -o "StrictHostKeyChecking=no" \
+              -o "UserKnownHostsFile=/dev/null" \
+              -P 12137 *SNAPSHOT.jar ${USER_NAME}@${HOSTNAME}:~/                
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f private_key
+
+
+  ec2_run_test:
+    needs: ec2_deploy
+    name: Test EC2 SSH Connection
+    runs-on: ubuntu-22.04
+
+    steps:      
+      - name: Setup SSH Directory
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Write Private Key
+        run: |
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/ec2_key
+          chmod 600 ~/.ssh/ec2_key
+    
+      - name: Test SSH Connection to EC2
+        env:
+          HOSTNAME: ${{ secrets.EC2_SSH_HOST }}
+          USER_NAME: ${{ secrets.EC2_USER_NAME }}
+        run: |
+          echo "SSH 연결 테스트를 시작합니다..."    
+ 
+          # EC2에 SSH 접속하여 기본 정보 확인
+          ssh -vvv -o StrictHostKeyChecking=no \
+          -o "UserKnownHostsFile=/dev/null" \
+          -i ~/.ssh/ec2_key -p 12137 ${USER_NAME}@${HOSTNAME} '
+
+          '          
+          
+          echo "SSH 연결 테스트가 완료되었습니다."          
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f private_key
