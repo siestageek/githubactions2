@@ -26,9 +26,17 @@ jobs:
         run: |
           echo "SSH 연결 테스트를 시작합니다..."
           
-          # SSH 개인키 파일 생성 및 권한 설정
-          echo "$PRIVATE_KEY" > private_key 
-          chmod 600 private_key
+          # SSH 디렉토리 생성
+          mkdir -p ~/.ssh/
+          
+          # known_hosts 파일 생성 및 호스트 키 추가
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+          
+          # SSH 개인키 설정
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/known_hosts
+          chmod 700 ~/.ssh/
  
           # EC2에 SSH 접속하여 기본 정보 확인
           ssh -vvv -o StrictHostKeyChecking=no -i private_key -p 12137 ${USER_NAME}@${HOSTNAME} '
