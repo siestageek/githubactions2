@@ -3,6 +3,8 @@ name: Test EC2 Connection
 # ssh -o StrictHostKeyChecking=no 
 # -i ~/.ssh/clouds2025.pem -p 12137 
 # ubuntu@13.125.218.128
+# GitHub Actions 러너는 매번 다른 IP를 사용하므로, 
+# 보안 그룹에서 SSH 포트(22번)를 0.0.0.0/0으로 열어야 합니다.
 
 on:
   workflow_dispatch:  # 수동 실행 가능
@@ -26,9 +28,21 @@ jobs:
           
           # SSH 개인키 파일 생성 및 권한 설정
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ls -al
-          echo "$PRIVATE_KEY"
-          cat private_key
+ 
+          # EC2에 SSH 접속하여 기본 정보 확인
+          ssh -o StrictHostKeyChecking=no -i private_key -p 12137 ${USER_NAME}@${HOSTNAME} '
+            echo "=== EC2 연결 성공! ==="
+            echo "현재 사용자: $(whoami)"
+            echo "호스트명: $(hostname)"
+            echo "현재 시간: $(date)"
+            echo "운영체제: $(cat /etc/os-release | grep PRETTY_NAME)"
+            echo "현재 디렉토리: $(pwd)"
+            echo "디스크 사용량:"
+            df -h | head -5
+            echo "메모리 사용량:"
+            free -h
+            echo "=== Hello from EC2! ==="
+          '          
           
           echo "SSH 연결 테스트가 완료되었습니다."
 
