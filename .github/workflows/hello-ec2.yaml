@@ -26,7 +26,9 @@ jobs:
           
           # SSH 개인키 파일 생성 및 권한 설정
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          cat private_key    
+          ls -al
+          echo "$PRIVATE_KEY"
+          cat private_key
           
           echo "SSH 연결 테스트가 완료되었습니다."
 
