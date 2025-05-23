@@ -6,6 +6,11 @@ WORKDIR /app
 # gradle 캐시를 활용하기 위해 필요한 파일 먼저 복사
 COPY build.gradle settings.gradle .
 COPY gradle ./gradle
+
+# gradle wrapper 권한 설정 (있는 경우)
+COPY gradlew ./
+RUN chmod +x gradlew
+
 RUN gradle dependencies --no-daemon
 
 # 소스 코드 복사 및 빌드
