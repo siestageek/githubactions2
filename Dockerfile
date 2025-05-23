@@ -24,9 +24,10 @@ WORKDIR /app
 
 COPY --from=build /app/build/libs/*.jar app.jar
 
-ENV JAVA_OPTS="-Xms512m -Xmx512m"
+# ENV JAVA_OPTS="-Xms512m -Xmx512m"
+ENV JAVA_TOOL_OPTIONS="-Xms512m -Xmx512m"
 ENV SERVER_PORT=8080
 
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "exec java ${JAVA_OPTS} -jar app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
