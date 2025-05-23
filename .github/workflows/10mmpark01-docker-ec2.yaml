@@ -43,7 +43,7 @@ jobs:
           push: true
           load: false
           tags: |
-            ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:arm64
           #cache-from: type=gha
           #cache-to: type=gha,mode=max
           no-cache: true
