@@ -1,5 +1,5 @@
 # 빌드 단계
-FROM gradle:8.12-jdk17-alpine AS build
+FROM gradle:8.12-jdk17-jammy AS build
 
 WORKDIR /app
 
@@ -18,7 +18,7 @@ COPY src ./src
 RUN gradle bootJar --no-daemon -x test
 
 # 실행 단계
-FROM amazoncorretto:17-alpine
+FROM amazoncorretto:17
 
 WORKDIR /app
 
