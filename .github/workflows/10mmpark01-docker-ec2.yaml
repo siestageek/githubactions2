@@ -28,7 +28,7 @@ jobs:
       - name: setup QEMU
         uses: docker/setup-qemu-action@v3 
         with:
-          platforms: linux/arm64
+          platforms: linux/amd64,linux/arm64
 
       - name: setup docker buildx
         uses: docker/setup-buildx-action@v3
@@ -39,14 +39,13 @@ jobs:
           context: .
           file: ./Dockerfile
           #platforms: linux/amd64,linux/arm64/v8,linux/arm64/v7,linux/arm64
-          platforms: linux/arm64
+          platforms: linux/amd64,linux/arm64
           push: true
           load: false
           tags: |
-            ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:arm64
-          #cache-from: type=gha
-          #cache-to: type=gha,mode=max
-          no-cache: true
+            ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max          
 
       - name: check image
         run: |
@@ -139,7 +138,8 @@ jobs:
           port: 12137
           script: |
             docker compose -f ./compose-multijobs.yaml down  
-            docker compose -f ./compose-multijobs.yaml up -d  
+            docker image rm -f siestageek/massai_mara
+            docker compose -f ./compose-multijobs.yaml up -d
             sleep 15
           
             docker compose -f ./compose-multijobs.yaml ps
