@@ -1,4 +1,4 @@
-name: massai mara park 01 docker ec2
+name: massai mara park 01 docker ec2 \#2
 
 on:
   workflow_dispatch
