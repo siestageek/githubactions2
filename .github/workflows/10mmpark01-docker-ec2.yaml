@@ -32,10 +32,10 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           push: false
           load: true
-          tags: ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          tags: ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -45,7 +45,7 @@ jobs:
 
       - name: save docker image
         run: |
-          docker save ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} > image.tar   
+          docker save ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:arm64 > image.tar   
 
       - name: Upload image artifact
         uses: actions/upload-artifact@v4
@@ -79,8 +79,8 @@ jobs:
       
       - name: docker operations
         run: |       
-          docker  push  ${{env.DOCKER_USERNAME}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
-          docker  tag   ${{env.DOCKER_USERNAME}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}} \
+          docker  push  ${{env.DOCKER_USERNAME}}/${{env.IMAGE_NAME}}:arm64
+          docker  tag   ${{env.DOCKER_USERNAME}}/${{env.IMAGE_NAME}}:arm64 \
               ${{env.DOCKER_USERNAME}}/${{env.IMAGE_NAME}}:latest
           docker  push  ${{env.DOCKER_USERNAME}}/${{env.IMAGE_NAME}}:latest
           docker  search    ${{env.IMAGE_NAME}}:latest
