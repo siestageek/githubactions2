@@ -44,7 +44,7 @@ jobs:
           load: false
           tags: |
             ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ IMAGE_TAG }}
+            ${{ env.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max          
 
